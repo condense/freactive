@@ -7,7 +7,7 @@ See the original [README](https://github.com/aaronc/freactive.core) for details.
 
 Reactive atoms, expressions, cursors for Clojure(Script).
 
-[![Clojars Project](http://clojars.org/ampere/freactive.core/latest-version.svg)](http://clojars.org/ampere/freactive.core)
+[![Clojars Project](http://clojars.org/condense/freactive.core/latest-version.svg)](http://clojars.org/condense/freactive.core)
 
 ## License
 

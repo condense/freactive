@@ -624,7 +624,7 @@ using the lens-cursor function."
      
      (deftype ReactiveExpression [id ^:mutable state ^:mutable dirty f deps meta watches fwatches watchers
                                   invalidation-watches iwatchers
-                                  register-dep-fn lazy trace-captures]
+                                  register-dep-fn lazy trace-captures teardown]
        Object
        (equiv [this other]
          (-equiv this other))
@@ -651,7 +651,8 @@ using the lens-cursor function."
                                     (when-let [clean* (.-clean binding-info)]
                                       (clean* dep)))
                                   (js-delete obj key)))
-           (set! (.-dirty this) true)))
+           (set! (.-dirty this) true)
+           (when teardown (teardown this))))
        (dispose [this] (.clean this))
        (addFWatch [this key f]
          (when-not (aget (.-fwatches this) key)
@@ -741,11 +742,12 @@ using the lens-cursor function."
        (-hash [this] (goog/getUid this)))
 
      (defn rx*
-       ([f] (rx* f true))
-       ([f lazy]
+       ([f] (rx* f true nil))
+       ([f lazy] (rx* f lazy nil))
+       ([f lazy teardown]
         (let [id (new-reactive-id)
               reactive (ReactiveExpression. id nil true f #js {} nil nil #js {} 0 #js {} 0 nil lazy
-                                            *do-trace-captures*)]
+                                            *do-trace-captures* teardown)]
           (set! (.-register-dep-fn reactive) (make-register-dep reactive))
           reactive))))
 
